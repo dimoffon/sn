@@ -1,0 +1,21 @@
+logging:
+  level:
+    org:
+      springframework:
+        web: debug
+
+spring:
+  liquibase:
+    change-log: db/changelog/db.changelog-master.xml
+  session:
+    jdbc:
+      initialize-schema: always
+  jpa:
+    hibernate:
+      ddl-auto: none
+
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://${MYSQL_HOST:localhost}:3306/sndb
+    username: root
+    password: 1234
