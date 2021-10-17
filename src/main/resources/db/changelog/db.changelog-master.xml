@@ -110,4 +110,45 @@
             <column name="role" value="ADMIN" />
         </insert>
     </changeSet>
+
+    <changeSet id="20211016175300" author="dimoffon">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">select count(1) from sndb.interests</sqlCheck>
+        </preConditions>
+        <insert tableName="interests" schemaName="sndb">
+            <column name="name" value="sport" />
+        </insert>
+        <insert tableName="interests" schemaName="sndb">
+            <column name="name" value="movie" />
+        </insert>
+        <insert tableName="interests" schemaName="sndb">
+            <column name="name" value="travel" />
+        </insert>
+        <insert tableName="interests" schemaName="sndb">
+            <column name="name" value="music" />
+        </insert>
+        <insert tableName="interests" schemaName="sndb">
+            <column name="name" value="programming" />
+        </insert>
+        <insert tableName="interests" schemaName="sndb">
+            <column name="name" value="books" />
+        </insert>
+    </changeSet>
+
+    <changeSet id="20211016175301" author="dimoffon">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="friends" schemaName="sndb" />
+            </not>
+        </preConditions>
+        <createTable tableName="friends" schemaName="sndb">
+            <column name="user_id" type="bigint" />
+            <column name="friend_id" type="bigint" />
+        </createTable>
+        <addUniqueConstraint schemaName="sndb" tableName="friends" columnNames="user_id, friend_id" />
+        <addForeignKeyConstraint baseTableName="friends" baseColumnNames="user_id" constraintName="friends_u_id_fk"
+                                 referencedTableName="users" referencedColumnNames="id" />
+        <addForeignKeyConstraint baseTableName="friends" baseColumnNames="friend_id" constraintName="friends_f_id_fk"
+                                 referencedTableName="users" referencedColumnNames="id" />
+    </changeSet>
 </databaseChangeLog>

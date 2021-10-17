@@ -1,30 +1,36 @@
 package io.dimoffon.sn.controller;
 
 import io.dimoffon.sn.entity.User;
-import io.dimoffon.sn.repository.UserRepository;
+import io.dimoffon.sn.service.InterestService;
 import io.dimoffon.sn.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
-@Controller()
+@Controller
 public class UserController {
 
     final UserService userService;
+    final InterestService interestService;
 
     @Autowired
-    public UserController(final UserService userService) {
+    public UserController(final UserService userService,
+                          final InterestService interestService) {
         this.userService = userService;
+        this.interestService = interestService;
     }
 
     @GetMapping("/register")
-    public String showSignUpForm(User user) {
+    public String showSignUpForm(Model model) {
+        model.addAttribute("user", User.builder().build());
+        model.addAttribute("allInterests", interestService.getInterests());
         return "register";
     }
 
@@ -34,29 +40,16 @@ public class UserController {
             return "register";
         }
 
-        userService.addUser(user);
-        return "redirect:/index";
-    }
-
-    @GetMapping("/edit/{id}")
-    public String showUpdateForm(@PathVariable("id") long id, Model model) {
-        //User user = userRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Invalid user Id:" + id));
-        User user = null; //!!!!! remove
-        model.addAttribute("user", user);
-
-        return "update-user";
-    }
-
-    @PostMapping("/update/{id}")
-    public String updateUser(@PathVariable("id") long id, @Valid User user, BindingResult result, Model model) {
-        if (result.hasErrors()) {
-            user.setId(id);
-            return "update-user";
+        try {
+            userService.addUser(user);
+        } catch (Exception e) {
+            ObjectError error = new ObjectError("globalError", e.getMessage());
+            result.addError(error);
         }
-
-        //userRepository.save(user);
-
-        return "redirect:/personal";
+        if (result.hasErrors()) {
+            return "register";
+        }
+        return "redirect:/index";
     }
 
 }
