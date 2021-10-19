@@ -8,7 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.Collection;
 import java.util.List;
 
 @Service
@@ -47,8 +46,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Collection<User> getUsers(final UserFilter filter) {
-        Collection<User> users = userRepository.getUsers(filter);
+    public List<User> getUsers(final UserFilter filter) {
+        List<User> users = userRepository.getUsers(filter);
         users.forEach(u -> u.setInterests(interestRepository.getUserInterests(u)));
         return users;
     }
@@ -59,7 +58,17 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Collection<User> getStrangers(final UserFilter filter) {
+    public List<User> getStrangers(final UserFilter filter) {
         return userRepository.getStrangers(filter);
+    }
+
+    @Override
+    public void addFriend(final Long userId, final Long friendId) {
+        userRepository.addFriend(userId, friendId);
+    }
+
+    @Override
+    public void removeFriend(final Long userId, final Long friendId) {
+        userRepository.removeFriend(userId, friendId);
     }
 }

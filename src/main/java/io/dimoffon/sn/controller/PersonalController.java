@@ -7,15 +7,12 @@ import io.dimoffon.sn.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 @Controller
-@RequestMapping("/personal")
 public class PersonalController {
 
     private final UserService userService;
@@ -34,11 +31,31 @@ public class PersonalController {
         return userService.getFriends(UserFilter.builder().id(userId).build());
     }
 
-    @GetMapping("")
+    @ModelAttribute("strangers")
+    public List<User> listStrangers(HttpServletRequest request) {
+        Long userId = getUserId(request);
+        return userService.getStrangers(UserFilter.builder().id(userId).build());
+    }
+
+    @GetMapping("/personal")
     public void personalPage(HttpServletRequest request, Model model) {
         Long userId = getUserId(request);
         User user = userService.getUserById(userId);
         model.addAttribute("user", user);
+    }
+
+    @PutMapping("/personal/friend/{friendId}")
+    public String addFriend(@PathVariable Long friendId, HttpServletRequest request, Model model) {
+        Long userId = getUserId(request);
+        userService.addFriend(userId, friendId);
+        return "redirect:/personal";
+    }
+
+    @DeleteMapping("/personal/friend/{friendId}")
+    public String deleteFriend(@PathVariable Long friendId, HttpServletRequest request, Model model) {
+        Long userId = getUserId(request);
+        userService.removeFriend(userId, friendId);
+        return "redirect:/personal";
     }
 
     private Long getUserId(final HttpServletRequest request) {

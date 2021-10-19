@@ -33,14 +33,37 @@
     </div>
     <!--<div th:if="${ not#lists.isEmpty(friends)}">-->
     <div>
+        <h3>Friends</h3>
         <table data-toggle="table" data-pagination="true">
             <tr>
                 <th data-sortable="true">Name</th>
-                <th>Status</th>
+                <th>Action</th>
             </tr>
             <tr th:each="friend : ${friends}">
                 <td th:text="${friend.firstName} + ' ' +  ${friend.lastName}"/>
-                <td th:text="Online"/>
+                <td>
+                    <form action="#" th:action="@{/personal/friend/} + ${{friend.id}}" th:method="delete">
+                        <input type="submit" value="Remove" class="btn btn-primary"/>
+                    </form>
+                </td>
+            </tr>
+        </table>
+    </div>
+
+    <div>
+        <h3>Strangers</h3>
+        <table data-toggle="table" data-pagination="true" class="table">
+            <tr>
+                <th data-sortable="true">Name</th>
+                <th>Action</th>
+            </tr>
+            <tr th:each="stranger : ${strangers}">
+                <td th:text="${stranger.firstName} + ' ' +  ${stranger.lastName}"/>
+                <td>
+                    <form action="#" th:action="@{/personal/friend/} + ${{stranger.id}}" th:method="put">
+                        <input type="submit" value="Add" class="btn btn-primary"/>
+                    </form>
+                </td>
             </tr>
         </table>
     </div>

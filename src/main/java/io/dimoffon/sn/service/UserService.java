@@ -3,7 +3,6 @@ package io.dimoffon.sn.service;
 import io.dimoffon.sn.dto.UserFilter;
 import io.dimoffon.sn.entity.User;
 
-import java.util.Collection;
 import java.util.List;
 
 public interface UserService {
@@ -11,9 +10,13 @@ public interface UserService {
 
     User getUserById(Long userId);
 
-    Collection<User> getUsers(UserFilter filter);
+    List<User> getUsers(UserFilter filter);
 
     List<User> getFriends(UserFilter filter);
 
-    Collection<User> getStrangers(UserFilter filter);
+    List<User> getStrangers(UserFilter filter);
+
+    void addFriend(Long userId, Long friendId);
+
+    void removeFriend(Long userId, Long friendId);
 }

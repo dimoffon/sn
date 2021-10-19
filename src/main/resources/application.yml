@@ -13,9 +13,13 @@ spring:
   jpa:
     hibernate:
       ddl-auto: none
+  mvc:
+    hiddenmethod:
+      filter:
+        enabled: true
 
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://${MYSQL_HOST:localhost}:3306/sndb
-    username: root
-    password: 1234
+    username: ${MYSQL_USER:root}
+    password: ${MYSQL_PASS:1234}

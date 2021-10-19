@@ -40,8 +40,8 @@ public class UserRepository {
                 role);
     }
 
-    public Collection<User> getUsers(final UserFilter filter) {
-        Collection<User> result = new LinkedList<>();
+    public List<User> getUsers(final UserFilter filter) {
+        List<User> result = new LinkedList<>();
         jdbcTemplate.query("select * from users where enabled = 1 and username like ?",
                 ps -> {
                     ps.setString(1, filter.getUsername());
@@ -95,18 +95,20 @@ public class UserRepository {
         return result;
     }
 
-    public Collection<User> getStrangers(final UserFilter filter) {
-        Collection<User> result = new LinkedList<>();
-        jdbcTemplate.query("select * from users u left outer join friends f on u.id = f.friend_id " +
-                        "where f.enabled = 1 " +
-                        "and f.friend_id is null " +
-                        "and f.user_id = ? " +
-                        "and f.user_id <> ? " +
-                        "and u.username like ?",
+    public List<User> getStrangers(final UserFilter filter) {
+        List<User> result = new LinkedList<>();
+        jdbcTemplate.query("select * " +
+                        "from users u " +
+                        "         left join " +
+                        "     (select * " +
+                        "      from users u " +
+                        "               left join friends f on u.id = f.friend_id " +
+                        "      where f.user_id = ? and u.enabled = 1) fr on u.id = fr.id " +
+                        "where fr.id is null " +
+                        "  and u.id <> ?" ,
                 ps -> {
                     ps.setLong(1, filter.getId());
                     ps.setLong(2, filter.getId());
-                    ps.setString(3, filter.getUsername());
                 },
                 rs -> {
                     result.add(User.builder()
@@ -122,4 +124,15 @@ public class UserRepository {
         return result;
     }
 
+    public void addFriend(final Long userId, final Long friendId) {
+        jdbcTemplate.update("insert into friends (user_id, friend_id) values (?, ?)",
+                userId,
+                friendId);
+    }
+
+    public void removeFriend(final Long userId, final Long friendId) {
+        jdbcTemplate.update("delete from friends where user_id = ? and friend_id = ?",
+                userId,
+                friendId);
+    }
 }
