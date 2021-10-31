@@ -1,7 +1,6 @@
 package io.dimoffon.sn.config;
 
 import io.dimoffon.sn.dto.UserFilter;
-import io.dimoffon.sn.repository.UserRepository;
 import io.dimoffon.sn.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,7 +11,6 @@ import org.springframework.security.web.DefaultRedirectStrategy;
 import org.springframework.security.web.RedirectStrategy;
 import org.springframework.security.web.WebAttributes;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
-import org.springframework.stereotype.Component;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;

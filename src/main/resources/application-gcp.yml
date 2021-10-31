@@ -1,0 +1,36 @@
+logging:
+  level:
+    org:
+      springframework:
+        web: debug
+database: mysql
+spring:
+  liquibase:
+    change-log: db/changelog/db.changelog-master.xml
+  session:
+    jdbc:
+      initialize-schema: always
+  jpa:
+    hibernate:
+      ddl-auto: none
+  mvc:
+    hiddenmethod:
+      filter:
+        enabled: true
+
+  cloud:
+    gcp:
+      sql:
+        enabled: true
+        database-name: sndb
+        instance-connection-name: elegant-matrix-329811:europe-north1:sn-db
+        credentials:
+          #encoded-key: path:/creds.json
+          encoded-key: file:/Users/dvoronkov/Documents/job/elegant-matrix-329811-c1c60c7dd8f7.json1
+
+
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql:///sndb?cloudSqlInstance=elegant-matrix-329811:europe-north1:sn-db&user=root&password=root1
+    username: ${MYSQL_USER:root}
+    password: ${MYSQL_PASS:root1}
