@@ -48,7 +48,9 @@ public class UserServiceImpl implements UserService {
     @Override
     public List<User> getUsers(final UserFilter filter) {
         List<User> users = userRepository.getUsers(filter);
-        users.forEach(u -> u.setInterests(interestRepository.getUserInterests(u)));
+        if (filter.isWithInterests()) {
+            users.forEach(u -> u.setInterests(interestRepository.getUserInterests(u)));
+        }
         return users;
     }
 

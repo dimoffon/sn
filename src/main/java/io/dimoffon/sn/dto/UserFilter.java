@@ -9,5 +9,8 @@ public class UserFilter {
 
     private Long id;
     private String username;
+    private String firstName;
+    private String lastName;
+    private boolean withInterests;
 
 }

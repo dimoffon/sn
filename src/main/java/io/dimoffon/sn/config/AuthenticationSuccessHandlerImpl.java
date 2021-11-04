@@ -50,7 +50,11 @@ public class AuthenticationSuccessHandlerImpl implements AuthenticationSuccessHa
         } else {
             userName = ((User) authentication.getPrincipal()).getUsername();
         }
-        Optional<io.dimoffon.sn.entity.User> user = userService.getUsers(UserFilter.builder().username(userName).build()).stream().findAny();
+        UserFilter filter = UserFilter.builder()
+                .username(userName)
+                .withInterests(true)
+                .build();
+        Optional<io.dimoffon.sn.entity.User> user = userService.getUsers(filter).stream().findAny();
         if (user.isPresent()) {
             HttpSession session = request.getSession();
             session.setAttribute("userId", user.get().getId());

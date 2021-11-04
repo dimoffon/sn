@@ -5,6 +5,7 @@ import io.dimoffon.sn.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
+import org.springframework.util.StringUtils;
 
 import java.sql.ResultSet;
 import java.util.Collection;
@@ -42,9 +43,29 @@ public class UserRepository {
 
     public List<User> getUsers(final UserFilter filter) {
         List<User> result = new LinkedList<>();
-        jdbcTemplate.query("select * from users where enabled = 1 and username like ?",
+        StringBuilder qb = new StringBuilder("select * from users where enabled = 1");
+        if (isNotEmpty(filter.getUsername())) {
+            qb.append(" and ").append("username like ?");
+        }
+        if (isNotEmpty(filter.getFirstName())) {
+            qb.append(" and ").append("first_name like ?");
+        }
+        if (isNotEmpty(filter.getLastName())) {
+            qb.append(" and ").append("last_name like ?");
+        }
+        qb.append(" order by id");
+        jdbcTemplate.query(qb.toString(),
                 ps -> {
-                    ps.setString(1, filter.getUsername());
+                    int id = 1;
+                    if (isNotEmpty(filter.getUsername())) {
+                        ps.setString(id++, filter.getUsername());
+                    }
+                    if (isNotEmpty(filter.getFirstName())) {
+                        ps.setString(id++, filter.getFirstName());
+                    }
+                    if (isNotEmpty(filter.getLastName())) {
+                        ps.setString(id, filter.getLastName());
+                    }
                 },
                 rs -> {
                     result.add(User.builder()
@@ -58,6 +79,10 @@ public class UserRepository {
                             .build());
                 });
         return result;
+    }
+
+    private boolean isNotEmpty(final String filter) {
+        return filter != null && !filter.isEmpty();
     }
 
     public User getUserById(final Long userId) {
